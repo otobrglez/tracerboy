@@ -60,6 +60,13 @@ curl -D - --request POST \
   127.0.0.1:4000/analytics\?timestamp=1662981405\&user=Oto+Brglez\&event=click
 ```
 
+## API Interface
+
+```
+POST /analytics?timestamp={millis_since_epoch}&user={user_id}&event={click|impression}
+GET /analytics?timestamp={millis_since_epoch}
+```
+
 ## Development and testing 👷
 
 If you wish to run with reloading in **development mode** then please consider
