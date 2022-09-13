@@ -1,6 +1,6 @@
 # tracerboy
 
-The tracerboy API is an experimental event tracking and reporting web service, built as part of an [Assigment](./ASSIGMENT.md) at Narrative.
+The tracerboy API is an experimental event tracking and reporting web service, built as part of an [assignment](./ASSIGNMENT.md) at Narrative.
 
 ## Getting started
 

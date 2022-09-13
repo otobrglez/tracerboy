@@ -1,4 +1,4 @@
-## Assigment
+## Assignment
 
 As a part of integrating with our partners, Narrative supports collecting data on website visitors and returning some
 basic analytics on those visitors. The goal of this task is to implement a basic endpoint for this use case. It should
