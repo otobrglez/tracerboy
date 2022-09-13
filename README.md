@@ -62,9 +62,16 @@ curl -D - --request POST \
 
 ## API Interface
 
-```
+Main endpoint for accepting tracking information has the following query parameters:
+
+```http
 POST /analytics?timestamp={millis_since_epoch}&user={user_id}&event={click|impression}
-GET /analytics?timestamp={millis_since_epoch}
+```
+
+The endpint for reporting/analytics can be accessed on the given path
+
+```http
+GET /analytics
 ```
 
 ## Development and testing 👷
