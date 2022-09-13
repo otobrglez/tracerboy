@@ -1,0 +1,42 @@
+version: "3"
+
+services:
+  pg:
+    image: timescale/timescaledb-ha:pg14-latest
+    environment:
+      POSTGRES_PASSWORD: tb
+      POSTGRES_USER: tb
+      POSTGRES_DB: tb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg-data:/home/postgres/pgdata/data
+
+  tracerboy:
+    image: ghcr.io/otobrglez/tracerboy:latest
+    depends_on:
+      - pg
+    deploy:
+      mode: replicated
+      replicas: 1
+      update_config:
+        parallelism: 1
+
+    environment:
+      DATABASE_URL: jdbc:postgresql://pg:5432/tb?user=tb&password=tb
+    ports:
+      - "9090"
+    expose:
+      - "9090"
+  tracerboy-gw:
+    image: nginx:latest
+    volumes:
+      - ./.docker/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - tracerboy
+    ports:
+      - "4000:4000"
+
+volumes:
+  pg-data:
+    driver: local
