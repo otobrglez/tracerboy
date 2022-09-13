@@ -50,13 +50,15 @@ class TrackingSimulation extends Simulation:
   setUp(
     regularTraffic.inject(
       // atOnceUsers(2)
-      // rampUsers(1_00).during(60.seconds)
+      rampUsers(1_00).during(60.seconds)
       // constantUsersPerSec(100).during(1.minutes)
 
+      /*
       incrementUsersPerSec(6.0)
         .times(3)
         .eachLevelLasting(10)
         .separatedByRampsLasting(10)
         .startingFrom(10) // Double
+       */
     )
   ).protocols(httpProtocol)

@@ -14,11 +14,12 @@ object DatabaseMigrator:
         Flyway
           .configure()
           .cleanDisabled(false)
+          .mixed(true)
           .dataSource(databaseURL, null, null)
           .load()
       )
       _              <- ZIO.attempt {
-        flyway.clean()
+        // flyway.clean()
         flyway.migrate()
       }
     yield ()

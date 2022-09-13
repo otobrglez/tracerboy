@@ -93,6 +93,21 @@ sbt integration/GatlingIt/test
   application easy to scale.
 - `timestamp` query parameter in the `POST /analytics` request should likely be hidden from the outside and set on the
   server when data is received and processed.
+- In production use-case the business logic handling could be improved with usage
+  of [ZIO Prelude](https://github.com/zio/zio-prelude)
+  / [Validation](https://zio.github.io/zio-prelude/docs/functionaldatatypes/validation) or
+  Scala [Cats Validated](https://typelevel.org/cats/datatypes/validated.html)
+- The analytical aggregation is implemented with the help of
+  TimescaleDB's [hypertables](https://docs.timescale.com/getting-started/latest/create-hypertable/) and
+  real-time [continuous aggregates](https://docs.timescale.com/timescaledb/latest/how-to-guides/continuous-aggregates/).
+  In real-world scenario each of the aggregates would also need a proper retention policy.
+- Why I've chosen TimescaleDB and not some other alternative is neatly captured and explained
+  in [this article](https://docs.timescale.com/timescaledb/latest/overview/how-does-it-compare/timescaledb-vs-postgres/)
+  .
+  Other interesting options would also be [InfluxDB](https://www.influxdata.com/),
+  [MongoDB (time-series)](https://www.mongodb.com/docs/manual/core/timeseries-collections/) or other specialised
+  time-series databases.
+- Additional work should be done in this application in terms of logging and monitoring if it is to be used in the wild.
 
 # Author
 

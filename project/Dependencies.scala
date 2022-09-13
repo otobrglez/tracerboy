@@ -5,9 +5,10 @@ object Dependencies {
   type Modules = Seq[ModuleID]
 
   object Versions {
-    val zio: Version        = "2.0.2"
-    val zioLogging: Version = "2.1.1"
-    val gatling: Version    = "3.8.3"
+    val zio: Version            = "2.0.2"
+    val zioLogging: Version     = "2.1.1"
+    val gatling: Version        = "3.8.3"
+    val testcontainers: Version = "1.17.3"
   }
 
   lazy val database: Modules = Seq(

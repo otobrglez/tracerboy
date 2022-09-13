@@ -20,8 +20,11 @@
 
     <logger name="org.postgresql" level="DEBUG"/>
     <logger name="com.zaxxer.hikari" level="INFO"/>
-    <logger name="io.getquill" level="DEBUG"/>
-    <logger name="zhttp" level="DEBUG"/>
+    <logger name="io.getquill" level="WARN"/>
+
+    <logger name="io.getquill.context" level="WARN"/>
+
+    <logger name="zhttp" level="INFO"/>
 
     <root level="INFO">
         <appender-ref ref="STDOUT"/>
