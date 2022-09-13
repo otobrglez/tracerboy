@@ -1,27 +1,62 @@
 package com.pinkstack.tracerboy
 
 import io.gatling.core.Predef.*
+import io.gatling.core.feeder.Feeder
 import io.gatling.http.Predef.*
-import scala.concurrent.duration._
 
-class TrackingSimulation extends Simulation { // 3
+import java.util.UUID
+import scala.concurrent.duration.*
 
-  val httpProtocol = http // 4
-    .baseUrl("http://computer-database.gatling.io")                                  // 5
-    .acceptHeader("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8") // 6
-    .doNotTrackHeader("1")
-    .acceptLanguageHeader("en-US,en;q=0.5")
-    .acceptEncodingHeader("gzip, deflate")
-    .userAgentHeader("Mozilla/5.0 (Windows NT 5.1; rv:31.0) Gecko/20100101 Firefox/31.0")
+class TrackingSimulation extends Simulation:
+  // TODO: Use Testcontainers and existing Docker Compose in the future - https://www.testcontainers.org/
 
-  val scn = scenario("BasicSimulation") // 7
-    .exec(
-      http("request_1") // 8
-        .get("/")
-    )                   // 9
-    .pause(5)           // 10
+  val httpProtocol               = http.baseUrl("http://127.0.0.1:9090")
+  val uuidFeeder: Feeder[String] = Iterator.continually(Map("uuid" -> UUID.randomUUID().toString))
 
-  setUp(                       // 11
-    scn.inject(atOnceUsers(1)) // 12
-  ).protocols(httpProtocol)    // 13
-}
+  def userBrowsesPage =
+    feed(uuidFeeder)
+      .exec(
+        repeat(80)(
+          exec(
+            http("post_valid_click_event")
+              .post("/analytics")
+              .queryParamMap(
+                Map("timestamp" -> System.currentTimeMillis().toString, "event" -> "click", "user" -> "#{uuid}")
+              )
+              .check(status.in(204))
+          )
+        ).repeat(10)(
+          exec(
+            http("post_valid_impression_event")
+              .post("/analytics")
+              .queryParamMap(
+                Map("timestamp" -> System.currentTimeMillis().toString, "event" -> "impression", "user" -> "#{uuid}")
+              )
+              .check(status.in(204))
+          ).repeat(10)(
+            exec(
+              http("get_analytics")
+                .get("/analytics")
+                .check(status.in(200))
+            )
+          )
+        )
+      )
+
+  val regularTraffic = scenario("Regular traffic")
+    .exec(userBrowsesPage)
+    .pause(1)
+
+  setUp(
+    regularTraffic.inject(
+      // atOnceUsers(2)
+      // rampUsers(1_00).during(60.seconds)
+      // constantUsersPerSec(100).during(1.minutes)
+
+      incrementUsersPerSec(6.0)
+        .times(3)
+        .eachLevelLasting(10)
+        .separatedByRampsLasting(10)
+        .startingFrom(10) // Double
+    )
+  ).protocols(httpProtocol)

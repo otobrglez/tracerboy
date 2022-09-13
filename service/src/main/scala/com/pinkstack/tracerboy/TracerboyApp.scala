@@ -21,7 +21,7 @@ object TracerboyApp extends ZIOAppDefault:
 
   val analyticsApp: HttpApp[EventsService, Throwable] =
     Http.collectHttp[Request] {
-      case Method.POST -> _ / "analytics" =>
+      case Method.POST -> _ / "analytics"     =>
         createEvent
           .contramapZIO(EventParser.parse)
           .foldHttp(
@@ -35,7 +35,7 @@ object TracerboyApp extends ZIOAppDefault:
             _ => Http(Response.ok.setStatus(NoContent)),
             Http(Response.ok.setStatus(NoContent))
           )
-      case Method.GET -> _ / "analytics"  =>
+      case Method.GET -> _ / "analytics here" =>
         Http(Response.text("Analytics goes here."))
     }
 

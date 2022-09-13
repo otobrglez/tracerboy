@@ -4,7 +4,7 @@ lazy val scalaV = "3.2.0"
 version      := "0.0.1"
 scalaVersion := scalaV
 
-lazy val root = (project in file("service"))
+lazy val service = (project in file("service"))
   .enablePlugins(JavaServerAppPackaging, DockerPlugin)
   .settings(libraryDependencies ++= serviceDependencies)
   .settings(
@@ -12,7 +12,8 @@ lazy val root = (project in file("service"))
     name                := "tracerboy",
     Compile / mainClass := Some("com.pinkstack.tracerboy.TracerboyApp"),
     fork / run          := true,
-    testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework")
+    testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework"),
+    addCommandAlias("run", "service/run")
   )
   .settings(DockerSettings.settings: _*)
 

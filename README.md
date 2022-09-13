@@ -10,8 +10,10 @@ and [Docker](https://www.docker.com/). Developer experience can be further exten
 of [Nix](https://nixos.org/) it is however not mandatory requirement.
 
 This project uses [Postgres][pg] with [TimescaleDB][timescale] extension to store all analytical events
-and persistent queries. The application is bundled with embedded [Flyway][flyway] that will automatically detect the
-state of database and execute appropriate migrations when booted or reloaded.
+and [continuous aggregates](https://docs.timescale.com/timescaledb/latest/how-to-guides/continuous-aggregates/)
+with [hypertables](https://docs.timescale.com/getting-started/latest/create-hypertable/). The application is bundled
+with embedded [Flyway][flyway] that will automatically detect the state of database and execute appropriate migrations
+when booted or reloaded.
 
 ### Pre-requirements
 
@@ -24,7 +26,7 @@ initialise new empty database with name `tb`.
 ./bin/tracerboy-dev.sh up pg
 ```
 
-### 🏃‍♂️ Booting
+### Booting 🏃‍♂️💨
 
 Boot-up the application with `sbt run` and `DATABASE_URL` environment variable preconfigured.
 
@@ -58,11 +60,31 @@ curl -D - --request POST \
   127.0.0.1:4000/analytics\?timestamp=1662981405\&user=Oto+Brglez\&event=click
 ```
 
-## Development
+## Development and testing 👷
 
-If you wish to run with reloading in development mode then please consider using `sbt "~reStart"`.
+If you wish to run with reloading in **development mode** then please consider
+using [sbt-revolver](https://github.com/spray/sbt-revolver).
 
-The test suite that is bundled with the application and can be run with the help of `sbt test`.
+```bash
+sbt "~service/reStart"
+```
+
+The **unit tests** suite that is bundled with the application and can be run with the help of sbt.
+
+```bash
+sbt test
+```
+
+The **integration tests** are packaged as separate module and can be invoked via usage of Gatling.
+
+```bash
+sbt integration/GatlingIt/test
+```
+
+> The Gatling traffic simulation will run against the service running on localhost:9090. If this project is to become
+> more serious in the future I would likely suggest usage of [Testcontainers](https://www.testcontainers.org/) and
+> re-usage of existing Docker Compose setup and configuration
+> as [per-the-docs](https://www.testcontainers.org/modules/docker_compose/).
 
 ## Discussion and notes
 
